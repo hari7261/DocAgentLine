@@ -1,0 +1,30 @@
+INVOICE
+
+Invoice Number: INV-2026-001
+Date: February 25, 2026
+Due Date: March 25, 2026
+
+From:
+Acme Corporation
+123 Business Street
+New York, NY 10001
+Tax ID: 12-3456789
+
+To:
+Tech Solutions Inc.
+456 Tech Avenue
+San Francisco, CA 94102
+
+Items:
+1. Software Development Services - 40 hours @ $150/hour = $6,000.00
+2. Cloud Infrastructure Setup - 10 hours @ $200/hour = $2,000.00
+3. Technical Documentation - 5 hours @ $100/hour = $500.00
+
+Subtotal: $8,500.00
+Tax (8%): $680.00
+Total: $9,180.00
+
+Payment Terms: Net 30
+Payment Method: Wire Transfer
+
+Thank you for your business!

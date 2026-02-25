@@ -1,0 +1,33 @@
+version: '3.8'
+
+services:
+  api:
+    build: .
+    ports:
+      - "8000:8000"
+    environment:
+      - DATABASE_URL=postgresql://docagentline:password@db:5432/docagentline
+      - LLM_PROVIDER=openai
+      - LLM_API_KEY=${LLM_API_KEY}
+      - EMBEDDING_API_KEY=${EMBEDDING_API_KEY}
+    volumes:
+      - ./storage:/app/storage
+      - ./schemas:/app/schemas
+    depends_on:
+      - db
+    restart: unless-stopped
+
+  db:
+    image: postgres:15-alpine
+    environment:
+      - POSTGRES_DB=docagentline
+      - POSTGRES_USER=docagentline
+      - POSTGRES_PASSWORD=password
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    ports:
+      - "5432:5432"
+    restart: unless-stopped
+
+volumes:
+  postgres_data:

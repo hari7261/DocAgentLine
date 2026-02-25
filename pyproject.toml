@@ -1,0 +1,60 @@
+[project]
+name = "docagentline"
+version = "1.0.0"
+description = "Production document extraction pipeline with LLM-driven structured data extraction"
+requires-python = ">=3.11"
+dependencies = [
+    "fastapi>=0.109.0",
+    "uvicorn[standard]>=0.27.0",
+    "httpx>=0.26.0",
+    "sqlalchemy>=2.0.25",
+    "alembic>=1.13.1",
+    "pydantic>=2.5.3",
+    "pydantic-settings>=2.1.0",
+    "python-multipart>=0.0.6",
+    "jsonschema>=4.21.0",
+    "pypdf>=4.0.0",
+    "pillow>=10.2.0",
+    "pytesseract>=0.3.10",
+    "python-magic-bin>=0.4.14; sys_platform == 'win32'",
+    "python-magic>=0.4.27; sys_platform != 'win32'",
+    "tiktoken>=0.5.2",
+    "numpy>=1.26.3",
+    "opentelemetry-api>=1.22.0",
+    "opentelemetry-sdk>=1.22.0",
+    "click>=8.1.7",
+    "aiofiles>=23.2.1",
+    "tenacity>=8.2.3",
+]
+
+[project.optional-dependencies]
+dev = [
+    "pytest>=7.4.4",
+    "pytest-asyncio>=0.23.3",
+    "pytest-cov>=4.1.0",
+    "httpx>=0.26.0",
+]
+
+[project.scripts]
+docagentline = "docagentline.cli.main:cli"
+
+[build-system]
+requires = ["setuptools>=68.0"]
+build-backend = "setuptools.build_meta"
+
+[tool.setuptools]
+packages = ["docagentline"]
+
+[tool.setuptools.package-data]
+docagentline = ["py.typed"]
+
+[tool.pytest.ini_options]
+asyncio_mode = "auto"
+testpaths = ["tests"]
+python_files = ["test_*.py"]
+python_classes = ["Test*"]
+python_functions = ["test_*"]
+
+[tool.coverage.run]
+source = ["docagentline"]
+omit = ["*/tests/*", "*/migrations/*"]

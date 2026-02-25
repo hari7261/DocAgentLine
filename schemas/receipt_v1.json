@@ -1,0 +1,67 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "Receipt",
+  "description": "Receipt extraction schema",
+  "type": "object",
+  "properties": {
+    "merchant_name": {
+      "type": "string",
+      "description": "Merchant or store name"
+    },
+    "merchant_address": {
+      "type": "string",
+      "description": "Merchant address"
+    },
+    "transaction_date": {
+      "type": "string",
+      "format": "date-time",
+      "description": "Transaction date and time"
+    },
+    "transaction_id": {
+      "type": "string",
+      "description": "Transaction or receipt ID"
+    },
+    "items": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string",
+            "description": "Item name"
+          },
+          "quantity": {
+            "type": "number",
+            "description": "Quantity"
+          },
+          "price": {
+            "type": "number",
+            "description": "Item price"
+          }
+        },
+        "required": ["name", "price"]
+      }
+    },
+    "subtotal": {
+      "type": "number",
+      "description": "Subtotal amount"
+    },
+    "tax": {
+      "type": "number",
+      "description": "Tax amount"
+    },
+    "total": {
+      "type": "number",
+      "description": "Total amount"
+    },
+    "payment_method": {
+      "type": "string",
+      "description": "Payment method (e.g., cash, credit card)"
+    },
+    "currency": {
+      "type": "string",
+      "description": "Currency code"
+    }
+  },
+  "required": ["merchant_name", "total"]
+}
