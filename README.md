@@ -15,6 +15,7 @@ DocAgentLine is a non-interactive, automated pipeline that:
 
 ### High-Level Component Diagram (UML)
 
+```mermaid
 classDiagram
     class CLI {
       +submit(source, schema)
@@ -74,6 +75,7 @@ classDiagram
     PipelineEngine --> SchemaValidator : output checks
     PipelineEngine --> Storage : artifacts/prompts/responses
     PipelineEngine --> Database : state + results + telemetry
+```
 
 ### End-to-End Processing Flow
 
