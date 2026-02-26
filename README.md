@@ -15,10 +15,8 @@ DocAgentLine is a non-interactive, automated pipeline that:
 
 ### High-Level Component Diagram (UML)
 
-```mermaid
 classDiagram
     class CLI {
- codex/add-uml-and-diagrams-to-readme-9rtnq7
       +submit(source, schema)
       +status(document_id)
       +results(document_id)
@@ -32,27 +30,9 @@ classDiagram
     }
 
     class PipelineEngine {
-      +run(documentId, schemaVersion)
-      +resume(runId)
-      +executeStage(stageName)
-=======
-      +submit()
-      +status()
-      +results()
-      +metrics()
-    }
-
-    class API {
-      +POST /documents
-      +GET /documents/{id}/status
-      +GET /documents/{id}/extractions
-    }
-
-    class PipelineEngine {
       +run(document_id, schema_version)
       +resume(run_id)
       +execute_stage(stage_name)
-main
     }
 
     class StageRegistry {
@@ -60,18 +40,12 @@ main
     }
 
     class LLMProvider {
-codex/add-uml-and-diagrams-to-readme-9rtnq7
-=======
       <<interface>>
-main
       +generate(prompt)
     }
 
     class EmbeddingProvider {
-codex/add-uml-and-diagrams-to-readme-9rtnq7
-=======
       <<interface>>
- main
       +embed(text)
     }
 
@@ -80,30 +54,8 @@ codex/add-uml-and-diagrams-to-readme-9rtnq7
     }
 
     class Storage {
-codex/add-uml-and-diagrams-to-readme-9rtnq7
-      +saveArtifact(path, data)
-      +loadArtifact(path)
-    }
-
-    class Database {
-      +pipelineRuns
-      +documentStates
-      +extractions
-      +metrics
-      +auditLog
-    }
-
-    CLI --> PipelineEngine : starts
-    API --> PipelineEngine : starts
-    PipelineEngine --> StageRegistry : resolves
-    PipelineEngine --> LLMProvider : calls
-    PipelineEngine --> EmbeddingProvider : calls
-    PipelineEngine --> SchemaValidator : validates
-    PipelineEngine --> Storage : reads and writes
-    PipelineEngine --> Database : persists
-=======
-      +save_artifact()
-      +load_artifact()
+      +save_artifact(path, data)
+      +load_artifact(path)
     }
 
     class Database {
@@ -122,8 +74,6 @@ codex/add-uml-and-diagrams-to-readme-9rtnq7
     PipelineEngine --> SchemaValidator : output checks
     PipelineEngine --> Storage : artifacts/prompts/responses
     PipelineEngine --> Database : state + results + telemetry
-main
-```
 
 ### End-to-End Processing Flow
 
@@ -353,3 +303,4 @@ pytest tests/ -v --cov=docagentline
 ## License
 
 Internal enterprise use only.
+
