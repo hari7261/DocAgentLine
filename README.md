@@ -13,6 +13,124 @@ DocAgentLine is a non-interactive, automated pipeline that:
 - Persists all artifacts, metrics, and audit trails
 - Exposes operational APIs and CLI
 
+### High-Level Component Diagram (UML)
+
+```mermaid
+classDiagram
+    class CLI {
+      +submit()
+      +status()
+      +results()
+      +metrics()
+    }
+
+    class API {
+      +POST /documents
+      +GET /documents/{id}/status
+      +GET /documents/{id}/extractions
+    }
+
+    class PipelineEngine {
+      +run(document_id, schema_version)
+      +resume(run_id)
+      +execute_stage(stage_name)
+    }
+
+    class StageRegistry {
+      +resolve(stages)
+    }
+
+    class LLMProvider {
+      <<interface>>
+      +generate(prompt)
+    }
+
+    class EmbeddingProvider {
+      <<interface>>
+      +embed(text)
+    }
+
+    class SchemaValidator {
+      +validate(payload, schema)
+    }
+
+    class Storage {
+      +save_artifact()
+      +load_artifact()
+    }
+
+    class Database {
+      +pipeline_runs
+      +document_states
+      +extractions
+      +metrics
+      +audit_log
+    }
+
+    CLI --> PipelineEngine : triggers
+    API --> PipelineEngine : triggers
+    PipelineEngine --> StageRegistry : resolves stages
+    PipelineEngine --> LLMProvider : structured extraction
+    PipelineEngine --> EmbeddingProvider : vector generation
+    PipelineEngine --> SchemaValidator : output checks
+    PipelineEngine --> Storage : artifacts/prompts/responses
+    PipelineEngine --> Database : state + results + telemetry
+```
+
+### End-to-End Processing Flow
+
+```mermaid
+flowchart TD
+    A[Document Input\nCLI or API] --> B[Ingest]
+    B --> C[Text Extraction]
+    C --> D[Layout Normalization]
+    D --> E[Chunking]
+    E --> F[Embedding\noptional]
+    F --> G[Structured Extraction\nLLM]
+    E --> G
+    G --> H[Schema Validation]
+    H --> I[Persistence]
+    I --> J[Metrics and Audit]
+    J --> K[Results Available\nAPI/CLI]
+```
+
+### Sequence Diagram (Request to Result)
+
+```mermaid
+sequenceDiagram
+    participant User
+    participant Interface as CLI/API
+    participant Engine as Pipeline Engine
+    participant LLM as LLM Provider
+    participant Validator as Schema Validator
+    participant DB as DB/Storage
+
+    User->>Interface: Submit document + schema_version
+    Interface->>Engine: Start run
+    Engine->>DB: Persist run state (ingest)
+    Engine->>DB: Persist normalized/chunked artifacts
+    Engine->>LLM: Extract structured fields from chunks
+    LLM-->>Engine: Candidate JSON output
+    Engine->>Validator: Validate against schema
+    Validator-->>Engine: Valid / errors
+    Engine->>DB: Persist extraction, metrics, audit
+    Interface-->>User: Return document_id and status/result
+```
+
+### Stage Lifecycle (State-Oriented UML)
+
+```mermaid
+stateDiagram-v2
+    [*] --> Pending
+    Pending --> Running : stage started
+    Running --> Completed : success
+    Running --> Retrying : transient error
+    Retrying --> Running : retry attempt
+    Running --> Failed : non-retryable error
+    Failed --> Pending : manual resume / rerun
+    Completed --> [*]
+```
+
 ## Key Features
 
 - **Resumable**: Pipeline state persisted in SQLite, stages can resume from failure points
