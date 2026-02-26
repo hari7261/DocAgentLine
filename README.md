@@ -25,15 +25,15 @@ classDiagram
     }
 
     class API {
-      +postDocuments()
-      +getDocumentStatus(document_id)
-      +getExtractions(document_id)
+      +submitDocument(file, schemaVersion)
+      +getStatus(documentId)
+      +getExtractions(documentId)
     }
 
     class PipelineEngine {
-      +run(document_id, schema_version)
-      +resume(run_id)
-      +execute_stage(stage_name)
+      +run(documentId, schemaVersion)
+      +resume(runId)
+      +executeStage(stageName)
     }
 
     class StageRegistry {
@@ -53,29 +53,26 @@ classDiagram
     }
 
     class Storage {
-      +save_artifact(path, data)
-      +load_artifact(path)
+      +saveArtifact(path, data)
+      +loadArtifact(path)
     }
 
     class Database {
-      +pipeline_runs
-      +document_states
+      +pipelineRuns
+      +documentStates
       +extractions
       +metrics
-      +audit_log
+      +auditLog
     }
 
-    <<interface>> LLMProvider
-    <<interface>> EmbeddingProvider
-
-    CLI --> PipelineEngine : triggers
-    API --> PipelineEngine : triggers
-    PipelineEngine --> StageRegistry : resolves stages
-    PipelineEngine --> LLMProvider : structured extraction
-    PipelineEngine --> EmbeddingProvider : vector generation
-    PipelineEngine --> SchemaValidator : output checks
-    PipelineEngine --> Storage : artifacts/payloads
-    PipelineEngine --> Database : state/results/telemetry
+    CLI --> PipelineEngine : starts
+    API --> PipelineEngine : starts
+    PipelineEngine --> StageRegistry : resolves
+    PipelineEngine --> LLMProvider : calls
+    PipelineEngine --> EmbeddingProvider : calls
+    PipelineEngine --> SchemaValidator : validates
+    PipelineEngine --> Storage : reads and writes
+    PipelineEngine --> Database : persists
 ```
 
 ### End-to-End Processing Flow
