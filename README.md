@@ -18,6 +18,24 @@ DocAgentLine is a non-interactive, automated pipeline that:
 ```mermaid
 classDiagram
     class CLI {
+ codex/add-uml-and-diagrams-to-readme-9rtnq7
+      +submit(source, schema)
+      +status(document_id)
+      +results(document_id)
+      +metrics(document_id)
+    }
+
+    class API {
+      +submitDocument(file, schemaVersion)
+      +getStatus(documentId)
+      +getExtractions(documentId)
+    }
+
+    class PipelineEngine {
+      +run(documentId, schemaVersion)
+      +resume(runId)
+      +executeStage(stageName)
+=======
       +submit()
       +status()
       +results()
@@ -34,6 +52,7 @@ classDiagram
       +run(document_id, schema_version)
       +resume(run_id)
       +execute_stage(stage_name)
+main
     }
 
     class StageRegistry {
@@ -41,12 +60,18 @@ classDiagram
     }
 
     class LLMProvider {
+codex/add-uml-and-diagrams-to-readme-9rtnq7
+=======
       <<interface>>
+main
       +generate(prompt)
     }
 
     class EmbeddingProvider {
+codex/add-uml-and-diagrams-to-readme-9rtnq7
+=======
       <<interface>>
+ main
       +embed(text)
     }
 
@@ -55,6 +80,28 @@ classDiagram
     }
 
     class Storage {
+codex/add-uml-and-diagrams-to-readme-9rtnq7
+      +saveArtifact(path, data)
+      +loadArtifact(path)
+    }
+
+    class Database {
+      +pipelineRuns
+      +documentStates
+      +extractions
+      +metrics
+      +auditLog
+    }
+
+    CLI --> PipelineEngine : starts
+    API --> PipelineEngine : starts
+    PipelineEngine --> StageRegistry : resolves
+    PipelineEngine --> LLMProvider : calls
+    PipelineEngine --> EmbeddingProvider : calls
+    PipelineEngine --> SchemaValidator : validates
+    PipelineEngine --> Storage : reads and writes
+    PipelineEngine --> Database : persists
+=======
       +save_artifact()
       +load_artifact()
     }
@@ -75,6 +122,7 @@ classDiagram
     PipelineEngine --> SchemaValidator : output checks
     PipelineEngine --> Storage : artifacts/prompts/responses
     PipelineEngine --> Database : state + results + telemetry
+main
 ```
 
 ### End-to-End Processing Flow
